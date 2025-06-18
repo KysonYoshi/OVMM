@@ -114,15 +114,16 @@ Note:
 When prompted with "Enter id or name:", entering 0 will switch the robot to damp mode, which helps save energy.
 You can enter 1 afterward to make the robot stand up again.
 
-## Common Issues & Solutions
-### Issue 1: No Connection to Robot
-**Solution:**
-- Restart the robot.
-- Ensure you are connected to the correct Wi-Fi/Ethernet network.
-- Run `ifconfig` and verify that your IP address is in the `192.168.123.xxx` range.
-- reconnet the cable again.
+## Running MAST3R with Go2 Robot
+Run the MAST3R post estimation api on workstation before running `main.py` on Go2 Robot.
+### 1. Download and install MAST3R on workstation
+Follow the installation step on [MAST3R](https://github.com/naver/mast3r) repo
+ 
+### 2. Run post estimation API
+After the installation, run `post_estimation_api.py` on workstation.
 
-
+### 3. Run Go2 Robot
+After turn on the post estimation API, run the `main.py` on Go2 Robot
 
 ## Future Improvements
 - Add motion planning algorithms
@@ -131,6 +132,3 @@ You can enter 1 afterward to make the robot stand up again.
 ## Contributors
 - **Chi-Feng, Liu** (cl6933@nyu.edu)
 - **Mentor: [Juexiao Zhang](https://juexzz.github.io/)** 
-
-
-
