@@ -1,0 +1,20 @@
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+/*.png
+
+/*.pt
+
+/*.tar
+
+/.*pth
+
+/*.jpg
+
+.ply
+/*.png
+go2_lidar_example/
+
+saved_heightmaps/
+*.npy
