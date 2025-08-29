@@ -1,0 +1,88 @@
+#python EQA agent script
+#Generate the corresponding code according to the corresponding question
+
+#question: Show how many sampled_frames in this sample.
+#code:
+num = get_number_of_frames()
+say('f'There are {num} frames')
+
+#question: Show what kind of objects are there in frame number 3044.239 and the objects' quantities.
+#code:
+objects = get_object_from_frame("3044.239")
+object_quantities = count_objects(objects)
+say(f'The objects in frame 3064.730 are: {object_quantities}')
+
+#question: Where is the table?
+#code:
+objects = get_object("table")
+frames = get_object_frames(objects)
+say(f'Hi I find there is a table in picture: {frames}')
+show_images_from_frames(frames)
+
+#question: I am tired where can I go to sleep.
+#Hint: find bed!
+#code:
+objects = get_object("bed")
+frames = get_object_frames(objects)
+say(f'Hi I find there is a bed in picture: {frames}')
+show_images_from_frames(frames)
+
+#question: Where can I put my bottle?
+#Hint: find table!
+#code:
+objects = get_object("table")
+frames = get_object_frames(objects)
+say(f'Hi you can put your bottle on the table: {frames}')
+show_images_from_frames(frames)
+
+#question: I am hungry where can I go to eat.
+#Hint: find table!
+#code:
+objects = get_object("table")
+frames = get_object_frames(objects)
+say(f'Hi I find there is a table in picture: {frames}')
+show_images_from_frames(frames)
+
+#question: "My current position is in picture 'start', how can I go to picture 'goal'?"
+#code:
+start_frame = get_img2frame("start")
+goal_frame = get_img2frame("goal")
+start_node = get_frame2index(start_frame)
+goal_node = get_frame2index(goal_frame)
+path = shortest_path(start_node, goal_node)
+frame_path = [get_index2frame(i) for i in path]
+say(f'Your path is {frame_path}')
+show_images_from_frames(frame_path)
+
+#question: "are the tables in frame 3044.239 and frame 3105.730 the same?"
+#code:
+objects_frame_1 = get_object_from_frame("3044.239")
+objects_frame_2 = get_object_from_frame("3105.730")
+tables_frame_1 = [key for key, values in objects_frame_1.items() if issimilar(values,["table"])]
+tables_frame_2 = [key for key, values in objects_frame_2.items() if issimilar(values,["table"])]
+
+if isequal(tables_frame_1,  tables_frame_2):
+    say("The tables in frame 3044.239 and frame 3105.730 are the same.")
+else:
+    say("The tables in frame 3044.239 and frame 3105.730 are not the same.")
+show_images_from_frames(["3044.239", "3105.730"])
+
+
+#question: does the table in frame number: 3044.239 appear in other frames?
+#code:
+objects = get_object_from_frame("3044.239")
+target_objects = {key: values for key, values in objects.items() if issimilar(values,["table"])}
+frames = get_object_frames(target_objects)
+say(f'Hi I find there is the same table in picture: {frames}')
+show_images_from_frames(frames)
+
+#important!!! if you get any question regarding color, shape, texture... anything you think scene-graph representations can't solve, than use the following vlm() funciton.
+
+#question: What's the color of the cabinet in picture 3123.722?
+#code:
+response = vlm("3123.722", "What's the color of the cabinet?")
+say(f'{response}')
+show_images_from_frames(["3123.722"])
+
+#question: 
+#code:

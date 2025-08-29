@@ -1,0 +1,135 @@
+#Generate the corresponding code according to the corresponding function define.
+
+#define function: ind = get_index(index)
+#code:
+def get_index(index):
+    return get_index2frame(index)
+    
+#define function: object = get_all_objects_in_space()
+#code:
+def get_all_objects_in_space():
+    object_list = []
+    env = get_env()
+    for item in env.json_data["uidmap"].keys():
+        object_list.append(item)
+    return object_list
+    
+# define function: object_uids_list = get_object_from_frame(frame_name).
+#code:
+def get_object_from_frame(frame_name):
+    object_item_list = {}
+    env = get_env()
+    for a_key, a_values in env.json_data['annotations'][frame_name].items():
+        for u_key, u_values in env.json_data['uidmap'].items():
+            if a_key in u_values:
+                object_item_list[a_key] = u_key
+    return object_item_list
+
+#define function: result = isequal(a, b)
+#code:
+def isequal(a, b):
+    if a == b:
+        return True
+    return False
+
+#define function: nearby_frames = find_nearby_frames(frame)
+#code:
+def find_nearby_frames(self, frame_name):
+    env = get_env()
+    graph = env.json_data['p-p']
+    node = get_frame2index(frame_name)
+    neighbor = graph[node]
+    output_list = [index for index, value in enumerate(neighbor) if value == 1]
+    neighbor_list = [get_index2frame(i) for i in output_list]
+    return neighbor_list
+
+
+
+#define function: show_images_from_frames(frames)
+#code:
+def show_images_from_frames(self, frame_list):
+    num_images = len(frame_list)
+    num_cols = 3  
+    num_rows = (num_images + num_cols - 1) // num_cols  
+
+    plt.figure(figsize=(15, num_rows * 5))
+    image_paths = [msg_file_path + '/' + video_id + '/' + video_id + '_frames/lowres_wide/' + video_id + '_' + frame_number + '.png' for frame_number in frame_list]
+
+    for i, image_path in enumerate(image_paths):
+        if os.path.exists(image_path):
+            image = Image.open(image_path)
+            plt.subplot(num_rows, num_cols, i + 1)
+            plt.imshow(image)
+            plt.title(os.path.basename(image_path))
+            plt.axis('off')  
+
+    plt.tight_layout()
+    plt.show()
+
+#define function: quantities = count_objects(objects)
+#code:
+def count_objects(self, objects):
+    object_count = {}
+    for obj in objects:
+        if obj in object_count:
+            object_count[obj] += 1
+        else:
+            object_count[obj] = 1
+    return object_count
+
+#define function: objects_frame = get_object_from_frame("3044.239")
+#code:
+def get_object_from_frame(self, frame_name):
+    object_item_list = {}
+    for a_key, a_values in self.env.json_data['annotations'][frame_name].items():
+        for u_key, u_values in self.env.json_data['uidmap'].items():
+            if a_key in u_values:
+                object_item_list[a_key] = u_key
+    return object_item_list
+
+#define function: objects = get_object("table")
+#code:
+def get_object(self, object_name):
+    object_list = {}
+    if object_name in self.env.json_data["uidmap"]:
+        for item in self.env.json_data["uidmap"][object_name]:
+            object_list[item] = object_name
+    else:
+        obj = self.issimilar(object_name, self.env.json_data["uidmap"])
+        if obj != '':
+            object_list = self.get_object(obj)
+    return object_list
+
+#define function: path = shortest_path(start_node, goal_node)
+#code:
+def shortest_path(self, start, goal):
+    graph = self.env.json_data['p-p']
+    n = len(graph)
+    distances = {node: float('inf') for node in range(n)}
+    distances[start] = 0
+    priority_queue = [(0, start)]
+    previous_nodes = {node: None for node in range(n)}
+
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
+
+        if current_node == goal:
+            path = []
+            while previous_nodes[current_node] is not None:
+                path.append(current_node)
+                current_node = previous_nodes[current_node]
+            path.append(start)
+            return path[::-1]
+
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor, weight in enumerate(graph[current_node]):
+            if weight > 0:
+                distance = current_distance + weight
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    previous_nodes[neighbor] = current_node
+                    heapq.heappush(priority_queue, (distance, neighbor))
+
+    return None  
